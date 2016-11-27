@@ -39,17 +39,18 @@ class ecgapp(tk.Tk):
 #This also should declare the t,v variable 
 def uploaddata(self):
     global ecgdata
-    ecgdata = filedialog.askopenfile()
+    ecgdata = filedialog.askopenfilename()
+    #t,v = ecgdata(unpack=True)
     #t,v=ecgdata
-    print(ecgdata)
+    print("data imported")
     
     
 #functions for buttons
-def plotecg():
+def plotecg(self):
     style.use('ggplot')
-    t,v = np.loadtxt('C:/Users/Administrator/Desktop/mfiles/JohnECG.txt',unpack=True)
+    t,v = np.loadtxt(ecgdata,unpack=True)
     #t,v=csv.reader(open('C:/Users/Administrator/Desktop/mfiles/JohnECG.csv','rb'),delimiter=',')
-    plt.plot(data)
+    plt.plot(t,v)
     plt.title('ECG')
     plt.ylabel('voltage')
     plt.xlabel('time')
