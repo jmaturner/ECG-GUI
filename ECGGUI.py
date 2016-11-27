@@ -35,19 +35,27 @@ class ecgapp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+#this function should allow the user to browse for a txt raw data ECG file
+#This also should declare the t,v variable 
+def uploaddata(self):
+    global ecgdata
+    ecgdata = filedialog.askopenfile()
+    #t,v=ecgdata
+    print(ecgdata)
+    
+    
 #functions for buttons
-def plotecg(param):
+def plotecg():
     style.use('ggplot')
-    t,v=np.loadtxt('C:/Users/Administrator/Desktop/mfiles/JohnECG.txt',unpack=True)
-
+    t,v = np.loadtxt('C:/Users/Administrator/Desktop/mfiles/JohnECG.txt',unpack=True)
     #t,v=csv.reader(open('C:/Users/Administrator/Desktop/mfiles/JohnECG.csv','rb'),delimiter=',')
-    plt.plot(t,v)
+    plt.plot(data)
     plt.title('ECG')
     plt.ylabel('voltage')
     plt.xlabel('time')
     plt.show()
 
-#def uploaddata():
+
     
 
 class StartPage(tk.Frame): #makes a new page
@@ -58,10 +66,16 @@ class StartPage(tk.Frame): #makes a new page
         label.pack(pady=10,padx=10)
 
         #add button to execute function plotecg
-        button1 = tk.Button(self, text="Plot the ECG",
-                            command=lambda: plotecg("this worked"))
+        button1 = tk.Button(self, text="Upload a file",
+                            command=lambda: uploaddata("this worked"))
         button1.pack()
+        #add button to execute function plotecg
+        button2 = tk.Button(self, text="Plot the ECG",
+                            command=lambda: plotecg("this worked"))
+        button2.pack()
+        
 
+        
 
 
 app = ecgapp()
