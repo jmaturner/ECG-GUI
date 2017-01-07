@@ -36,17 +36,17 @@ class ecgapp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-#this function should allow the user to browse for a txt raw data ECG file
+#this function allows the user to browse for the data file
 def uploaddata():
-    global ecgdata
-    ecgdata = filedialog.askopenfilename()
+    global rawdata
+    rawdata = filedialog.askopenfilename()
     print("data imported")
     
 
 #functions for buttons
-def plotecg(self):
+def plotdata(self):
     style.use('ggplot')
-    t,v = np.loadtxt(ecgdata,unpack=True)
+    t,v = np.loadtxt(rawdata,unpack=True)
     global samples
     samples=len(v) 
     time = (samples/Fs)
@@ -59,9 +59,8 @@ def plotecg(self):
 #this function performs fft on data
 def dofft(self):
     style.use('ggplot')
-    t,v = np.loadtxt(ecgdata,unpack=True)
+    t,v = np.loadtxt(rawdata,unpack=True)
     fft1=np.fft.fft(v)
-    #Fs=400  #this should get the Fs value
     freqs=np.fft.fftfreq(len(fft1))
     inhertz=abs(freqs*Fs)
     plt.plot(inhertz,abs(fft1))
@@ -73,9 +72,7 @@ def dofft(self):
 
 def getFs():
     global Fs
-    Fs=samp.get() 
-    #mlabel2=Label(tk,text=mtext).pack()
-        
+    Fs=samp.get()         
     print("The sampling frequency in Hz is %d" % Fs )
 
 
@@ -84,7 +81,7 @@ class StartPage(tk.Frame): #makes a new page
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Entry Sampling Frequency First", font=LARGE_FONT)
+        label = tk.Label(self, text="Entery Sampling Frequency First", font=LARGE_FONT)
         label.pack(pady=20,padx=10)
 
         #add button to enter Fs sampling freq
@@ -96,13 +93,13 @@ class StartPage(tk.Frame): #makes a new page
                             command=getFs)
         button1.pack(pady=10,padx=10)
  
-        #add button to execute function plotecg
+        #add button to execute function plotdata
         button2 = tk.Button(self, text="Upload a data file",
                             command=uploaddata)
         button2.pack(pady=10,padx=10)
-        #add button to execute function plotecg
+        #add button to execute function plotdata
         button3 = tk.Button(self, text="Plot the data in time domain",
-                            command=lambda: plotecg("this worked"))
+                            command=lambda: plotdata("this worked"))
         button3.pack(pady=10,padx=10)
         
         #add button to perform FFT on data
