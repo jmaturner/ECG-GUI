@@ -8,7 +8,7 @@ from tkinter import *
 
 LARGE_FONT = ("Verdana", 12)
 
-class ecgapp(tk.Tk):
+class sigapp(tk.Tk):
 
     def __init__(self,*args,**kwargs):
 
@@ -51,7 +51,7 @@ def plotdata(self):
     samples=len(v) 
     time = (samples/Fs)
     plt.plot(t,v)
-    plt.title('ECG')
+    plt.title('Signal Plot')
     plt.ylabel('voltage')
     plt.xlabel('time')
     plt.show()
@@ -111,7 +111,7 @@ class StartPage(tk.Frame): #makes a new page
         
         
 
-app = ecgapp()
+app = sigapp()
 app.mainloop()
 
 
