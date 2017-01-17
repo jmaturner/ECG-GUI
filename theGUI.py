@@ -4,6 +4,9 @@ import csv
 from matplotlib import pyplot as plt
 from matplotlib import style
 from tkinter import *
+import sounddevice as sd
+import soundfile as sf
+
 
 
 LARGE_FONT = ("Verdana", 12)
@@ -41,6 +44,10 @@ def uploaddata():
     global rawdata
     rawdata = filedialog.askopenfilename()
     print("data imported")
+
+def uploadwav():
+    global wavdata
+    wavdata = filedialog.askopenfilename()
     
 
 #for plotting single column data - creates time array from Fs
@@ -67,6 +74,23 @@ def plotdata2():
     plt.xlabel('time')
     plt.show()
 
+#plays the signal
+def playit():
+    try:
+        global data
+        data,fs=sf.read(rawdata)
+        sd.play(data,fs)
+    except:
+        global snd
+        snd=np.loadtxt(rawdata)
+        sd.play(snd)
+        
+def stop():
+    try:
+        sd.stop(snd)
+    except:
+        sd.stop(data)
+        
 #this function performs fft on data
 def dofft(self):
     style.use('ggplot')
@@ -98,37 +122,49 @@ class StartPage(tk.Frame): #makes a new page
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Enter Sampling Frequency First", font=LARGE_FONT)
-        label.pack(pady=20,padx=10)
+        label = tk.Label(self, text="Enter fs if necessary", font=LARGE_FONT)
+        label.grid(row=0,column=2,columnspan=4)
 
         #add button to enter Fs sampling freq
         global samp 
         samp=IntVar()
-        mEntry = Entry(self, textvariable=samp).pack()     
+        mEntry = Entry(self, textvariable=samp).grid(row=1,column=3)     
         
         button1 = tk.Button(self, text="Submit Sample Freq",
                             command=getFs)
-        button1.pack(pady=10,padx=10)
+        button1.grid(row=1, column=2)
  
-        #add button to plot single column data - voltage only
+        #upload data button
         button2 = tk.Button(self, text="Upload a data file",
                             command=uploaddata)
-        button2.pack(pady=10,padx=10)
+        button2.grid(row=2, column=2)
 
-        #add button that handles 2 column, time, voltage data
+
+        #single column data
         button3 = tk.Button(self, text="Plot Single Column data",
                             command=plotdata)
-        button3.pack(pady=10,padx=10)
+        button3.grid(row=4, column=2,pady=20)
 
-        #add button to execute function plotdata
-        button4 = tk.Button(self, text="Plot two column data",
-                            command=plotdata2)
-        button4.pack(pady=10,padx=10)        
-
-        #add button to perform FFT on data
-        button5 = tk.Button(self, text="Perform the FFT and plot",
+        button4 = tk.Button(self, text="Perform the FFT and plot",
                             command=lambda: dofft("this worked"))
-        button5.pack(pady=10,padx=10)
+        button4.grid(row=5, column=2)
+
+        #two column data
+        button5 = tk.Button(self, text="Plot two column data",
+                            command=plotdata2)
+        button5.grid(row=4, column=4)        
+
+        button6 = tk.Button(self, text="Perform the FFT and plot",
+                            command=lambda: dofft("this worked"))
+        button6.grid(row=5, column=4)
+
+        #button to play the signal
+        button7 = tk.Button(self, text="Play it",
+                            command=playit)
+        button7.grid(row=7, column=3)
+        button8 = tk.Button(self, text="stop",
+                            command=stop)
+        button8.grid(row=8,column=3)
         
 
         
