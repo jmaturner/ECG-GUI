@@ -39,15 +39,18 @@ class sigapp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+#gets the variable fs if entered
+def getFs():
+    global fs
+    fs=samp.get()         
+    print("The sampling frequency in Hz is %d" % fs )
+
 #this function allows the user to browse for the data file
 def uploaddata():
     global rawdata
     rawdata = filedialog.askopenfilename()
     print("data imported")
 
-def uploadwav():
-    global wavdata
-    wavdata = filedialog.askopenfilename()
     
 
 #for plotting single column data - creates time array from Fs
@@ -94,27 +97,29 @@ def stop():
 #this function performs fft on data
 def dofft(self):
     style.use('ggplot')
-    t,v = np.loadtxt(rawdata,unpack=True)
-    fft1=np.fft.fft(v)
-    freqs=np.fft.fftfreq(len(fft1))
-    inhertz=abs(freqs*Fs)
+    try:
+        data,fs=sf.read(rawdata)
+        fft1=np.fft.fft(data)
+        freqs=np.fft.fftfreq(len(fft1))
+        inhertz=abs(freqs*fs)
+        plt.plot(inhertz,abs(fft1))
+        plt.title('Signal Spectrum FFT')
+        plt.xlabel('Freq Hz')
+        plt.ylabel('Power')
+        plt.show()
+    except:
+        fs=samp.get()
+        v = np.loadtxt(rawdata,unpack=True)
+        fft1=np.fft.fft(v)
+        freqs=np.fft.fftfreq(len(fft1))
+        inhertz=abs(freqs*fs)
+
+        plt.plot(inhertz,abs(fft1))
+        plt.title('Signal Spectrum FFT')
+        plt.xlabel('Freq Hz')
+        plt.ylabel('Power')
+        plt.show()
     
-    v1 = np.loadtxt(rawdata,unpack=True)
-    fft1=np.fft.fft(v)
-    freqs=np.fft.fftfreq(len(fft1))
-    inhertz=abs(freqs*Fs)    
-
-    plt.plot(inhertz,abs(fft1))
-    plt.title('Signal Spectrum FFT')
-    plt.xlabel('Freq Hz')
-    plt.ylabel('Power')
-    plt.show()
-
-
-def getFs():
-    global Fs
-    Fs=samp.get()         
-    print("The sampling frequency in Hz is %d" % Fs )
 
 
 
@@ -145,18 +150,14 @@ class StartPage(tk.Frame): #makes a new page
                             command=plotdata)
         button3.grid(row=4, column=2,pady=20)
 
-        button4 = tk.Button(self, text="Perform the FFT and plot",
-                            command=lambda: dofft("this worked"))
-        button4.grid(row=5, column=2)
-
         #two column data
         button5 = tk.Button(self, text="Plot two column data",
                             command=plotdata2)
         button5.grid(row=4, column=4)        
-
-        button6 = tk.Button(self, text="Perform the FFT and plot",
+        #performs fft
+        button6 = tk.Button(self, text="Plot the FFT",
                             command=lambda: dofft("this worked"))
-        button6.grid(row=5, column=4)
+        button6.grid(row=5, column=3)
 
         #button to play the signal
         button7 = tk.Button(self, text="Play it",
