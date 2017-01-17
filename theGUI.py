@@ -98,7 +98,7 @@ class StartPage(tk.Frame): #makes a new page
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Entery Sampling Frequency First", font=LARGE_FONT)
+        label = tk.Label(self, text="Enter Sampling Frequency First", font=LARGE_FONT)
         label.pack(pady=20,padx=10)
 
         #add button to enter Fs sampling freq
