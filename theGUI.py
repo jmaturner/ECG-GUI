@@ -45,19 +45,17 @@ def getFs():
     fs=samp.get()         
     print("The sampling frequency in Hz is %d" % fs )
 
-#this function allows the user to browse for the data file
+#browse for path to data file
 def uploaddata():
     global rawdata
     rawdata = filedialog.askopenfilename()
     print("data imported")
-
-    
+   
 
 #for plotting single column data - creates time array from Fs
 def plotdata():
     style.use('ggplot')
     v1=np.loadtxt(rawdata,unpack=True)
-    #elapsedtime=samples*1/Fs
     samples=len(v1)
     t1=np.linspace(0,samples-1,samples)
     plt.plot(t1,v1)
@@ -66,7 +64,7 @@ def plotdata():
     plt.xlabel('time')
     plt.show()
 
-#plots data that has time and voltage
+#plots two column data
 def plotdata2():
     style.use('ggplot')
     t=np.loadtxt(rawdata,unpack=True,usecols=(0,))
@@ -94,7 +92,7 @@ def stop():
     except:
         sd.stop(data)
         
-#this function performs fft on data
+#Performs fft on data
 def dofft(self):
     style.use('ggplot')
     try:
@@ -113,9 +111,8 @@ def dofft(self):
         fft1=np.fft.fft(v)
         freqs=np.fft.fftfreq(len(fft1))
         inhertz=abs(freqs*fs)
-
         plt.plot(inhertz,abs(fft1))
-        plt.title('Signal Spectrum FFT')
+        plt.title('FFT')
         plt.xlabel('Freq Hz')
         plt.ylabel('Power')
         plt.show()
