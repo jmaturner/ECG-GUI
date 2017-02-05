@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+Author - John Turner
+version1.1
 """
 
 import tkinter as tk
+from tkinter import *
 import numpy as np
 from scipy import signal
 from matplotlib import pyplot as plt
@@ -16,6 +16,7 @@ import soundfile as sf
 
 
 LARGE_FONT = ("Verdana", 12)
+
 
 
 class sigapp(tk.Tk):
@@ -54,17 +55,17 @@ def getFs():
     print("The sampling frequency in Hz is %d" % fs )
     print("The Nyquist Frequency is %d" % nyq)
 
-def getFc1():
+def getFcl():
     global fcl
     fcl = fc1.get()
     print(fc1.get())
 
-def getFc2():
+def getFch():
     global fch
     fch = fc2.get()
     print(fc2.get())    
 
-    #this function allows the user to browse for the data file
+#this function allows the user to browse for the data file
 def uploaddata():
     global rawdata
     rawdata = tk.filedialog.askopenfilename()
@@ -72,15 +73,14 @@ def uploaddata():
 
     
 #highpass filter - parameters will be passed from user at GUI    
+#scaled to accomodate any Fs
+#e.g 0.05 represents 15 hz for 600 Hz signal
 def plotfiltdata():
     v1=np.loadtxt(rawdata,unpack=True)
     samples=len(v1)
     t1=np.linspace(0,samples-1,samples)
-    #scaled to accomodate any Fs
-    #e.g 0.05 represents 15 hz for 600 Hz signal
     fc = fc1.get()
     low=fc/nyq  #fc = cutoff
-    #6th order highpass
     b,a=signal.butter(6,low,'high')
     y=signal.filtfilt(b,a,v1)
     plt.plot(t1,y,'r',t1,v1,'k')
@@ -127,7 +127,7 @@ def stop():
     except:
         sd.stop(data)
         
-#this function performs fft on data
+#performs fft on data
 def dofft(self):
     style.use('ggplot')
     try:
@@ -146,7 +146,6 @@ def dofft(self):
         fft1=np.fft.fft(v)
         freqs=np.fft.fftfreq(len(fft1))
         inhertz=abs(freqs*fs)
-
         plt.plot(inhertz,abs(fft1))
         plt.title('Signal Spectrum FFT')
         plt.xlabel('Freq Hz')
@@ -155,8 +154,8 @@ def dofft(self):
     
 
 
-
-class StartPage(tk.Frame): #makes a new page
+#makes a new page
+class StartPage(tk.Frame): 
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -176,8 +175,8 @@ class StartPage(tk.Frame): #makes a new page
         fc2 = tk.IntVar()
         Fc1Entry = Entry(self, textvariable=fc1).grid(row=3,column=5)     
         Fc2Entry = Entry(self,textvariable=fc2).grid(row=4,column=5)
-        buttonfc1 = tk.Button(self, text="Submit Fc1",command=getFc1)
-        buttonfc2 = tk.Button(self, text="Submit Fc2",command=getFc2)
+        buttonfc1 = tk.Button(self, text="Submit Fc1",command=getFcl)
+        buttonfc2 = tk.Button(self, text="Submit Fc2",command=getFch)
         buttonfc1.grid(row=3, column=4)
         buttonfc2.grid(row=4, column=4)
         
@@ -204,16 +203,10 @@ class StartPage(tk.Frame): #makes a new page
         button7.grid(row=7, column=3, pady=15)
         button8 = tk.Button(self, text="stop", command=stop)
         button8.grid(row=7,column=2, pady=15)
-       
-        #performs bandpass filter
-#        button9 = tk.Button(self, text="LowPass", command=bandfilt)
-#        button9.grid(row=4, column=2)
-       
+           
         #Plot filtered data
         button10 = tk.Button(self, text="Plot Filtered Signal", command=plotfiltdata)
-        button10.grid(row=4, column=3)        
-
-        
+        button10.grid(row=4, column=3)             
         
 
 app = sigapp()
