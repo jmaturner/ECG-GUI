@@ -13,11 +13,7 @@ from matplotlib import style
 import sounddevice as sd
 import soundfile as sf
 
-
-
 LARGE_FONT = ("Verdana", 12)
-
-
 
 class sigapp(tk.Tk):
 
@@ -25,25 +21,16 @@ class sigapp(tk.Tk):
 
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
-
         container.pack(side="top", fill="both", expand = True)
-
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
-
         self.frames = {}
-
         frame = StartPage(container,self)
-
         self.frames[StartPage] = frame
-
         frame.grid(row=0, column=0, sticky="snew")
-
         self.show_frame(StartPage)
         
-
     def show_frame(self, cont):
-
         frame = self.frames[cont]
         frame.tkraise()
 
@@ -71,7 +58,6 @@ def uploaddata():
     rawdata = tk.filedialog.askopenfilename()
     print("data imported")
 
-    
 #highpass filter - parameters will be passed from user at GUI    
 #scaled to accomodate any Fs
 #e.g 0.05 represents 15 hz for 600 Hz signal
@@ -89,7 +75,6 @@ def plotfiltdata():
     plt.xlabel('time')
     plt.show()
 
-     
 #plots data that has time and voltage
 def plotdata():
     style.use('ggplot')
@@ -152,9 +137,7 @@ def dofft(self):
         plt.ylabel('Power')
         plt.show()
     
-
-
-#makes a new page
+#Main gui - buttons and their commands 
 class StartPage(tk.Frame): 
 
     def __init__(self, parent, controller):
@@ -211,7 +194,3 @@ class StartPage(tk.Frame):
 
 app = sigapp()
 app.mainloop()
-
-
-
-
